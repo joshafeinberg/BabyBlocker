@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">BabyBlocker</string>
+    <string name="notification_title">BabyBlocker Active</string>
+    <string name="notification_content">Click this to block all presses on the screen. To disable click blocker, press screen 5 times</string>
+    <string name="notification_content_small">Click this to block all presses on the screen.</string>
+</resources>
