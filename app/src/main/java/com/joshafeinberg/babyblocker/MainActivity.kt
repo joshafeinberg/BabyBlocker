@@ -4,6 +4,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.ComponentActivity
@@ -46,7 +47,11 @@ class MainActivity : ComponentActivity() {
                         }
                     } else if (!isServiceRunning) {
                         Button(onClick = {
-                            applicationContext.startForegroundService(intent)
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                applicationContext.startForegroundService(intent)
+                            } else {
+                                startService(intent)
+                            }
                             isServiceRunning = true
                         }) {
                             Text("Start BabyBlocker")
