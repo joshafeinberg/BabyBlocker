@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "502865705271",
+    "project_id": "babyblocker-7f7e3",
+    "storage_bucket": "babyblocker-7f7e3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502865705271:android:248760dfca28e887c8c2b2",
+        "android_client_info": {
+          "package_name": "com.joshafeinberg.babyblocker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "502865705271-tsbf2dgpqdic9u2tp6ee0baua9bsr400.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxX8fShEH4PrYU7_J9D7USmtuOaZxS4Ig"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "502865705271-tsbf2dgpqdic9u2tp6ee0baua9bsr400.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
