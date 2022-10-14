@@ -6,4 +6,12 @@
     <string name="notification_action_start">Start Blocking</string>
     <string name="notification_action_stop">Stop Blocking</string>
     <string name="notification_action_close">Close Baby Blocker</string>
+    <string name="welcome">Welcome to Baby Blocker!</string>
+    <string name="start">Start BabyBlocker</string>
+    <string name="stop">Stop BabyBlocker</string>
+    <string name="system_overlay_dialog_title">Why we need system overlay permission</string>
+    <string name="system_overlay_dialog_text">We need this permission to allow us to draw a blank screen over your app to block clicks</string>
+    <string name="system_overlay_button">Enable System Overlay</string>
+    <string name="blocking_on_header">Currently blocking all clicks!</string>
+    <string name="blocking_on_body">Either press the screen five times or cancel the blocker via the notification</string>
 </resources>

@@ -62,6 +62,8 @@ class NotificationService : Service() {
             .setOngoing(false)
 
         serviceScope.launch {
+            BabyBlockerStatus.toggleNotification(isActive = true)
+
             BabyBlockerStatus.babyBlockerStatus.collect { isActive ->
                 builder?.clearActions()
                     ?.addAction(if (isActive) stopBlockingNotificationAction else startBlockingNotificationAction)
@@ -85,7 +87,10 @@ class NotificationService : Service() {
 
         startService(stopBlockingIntent)
 
-        serviceJob.cancel()
+        serviceScope.launch {
+            BabyBlockerStatus.toggleNotification(isActive = false)
+            serviceJob.cancel()
+        }
 
         super.onDestroy()
     }

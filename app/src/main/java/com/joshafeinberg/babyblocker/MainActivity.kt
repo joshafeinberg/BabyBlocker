@@ -10,12 +10,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.joshafeinberg.babyblocker.ui.theme.BabyBlockerTheme
 
 class MainActivity : ComponentActivity() {
@@ -28,33 +34,53 @@ class MainActivity : ComponentActivity() {
 
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
 
-                    var hasOverlayPermission by remember { mutableStateOf(hasOverlayPermission(this)) }
-                    var openDialog by remember { mutableStateOf(false) }
-                    val isServiceRunning by BabyBlockerStatus.babyBlockerStatus.collectAsState()
+                    Column(Modifier.padding(16.dp)) {
 
-                    if (!hasOverlayPermission) {
-                        SystemOverlayButton(modifier = Modifier) {
-                            if (hasOverlayPermission(this)) {
-                                hasOverlayPermission = true
-                            } else {
-                                openDialog = true
+                        var hasOverlayPermission by remember { mutableStateOf(hasOverlayPermission(this@MainActivity)) }
+                        var openDialog by remember { mutableStateOf(false) }
+                        val isNotificationActive by BabyBlockerStatus.notificationActive.collectAsState(isServiceRunning())
+                        val isBlockerRunning by BabyBlockerStatus.babyBlockerStatus.collectAsState()
+
+                        Text(stringResource(R.string.welcome), style = MaterialTheme.typography.h2, textAlign = TextAlign.Center)
+
+                        if (!hasOverlayPermission) {
+                            Row {
+                                SystemOverlayButton(modifier = Modifier) {
+                                    if (hasOverlayPermission(this@MainActivity)) {
+                                        hasOverlayPermission = true
+                                    } else {
+                                        openDialog = true
+                                    }
+                                }
+
+                                IconButton(onClick = { openDialog = true }) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.baseline_question_mark_24),
+                                        contentDescription = "?"
+                                    )
+                                }
                             }
-                        }
 
-                        if (openDialog) {
-                            SystemOverlayExplainer(onDismissRequest = { openDialog = false})
-                        }
-                    } else if (!isServiceRunning) {
-                        Button(onClick = {
-                            applicationContext.startForegroundService(intent)
-                        }) {
-                            Text("Start BabyBlocker")
-                        }
-                    } else {
-                        Button(onClick = {
-                            applicationContext.stopService(intent)
-                        }) {
-                            Text("Stop BabyBlocker")
+                            if (openDialog) {
+                                SystemOverlayExplainer(onDismissRequest = { openDialog = false })
+                            }
+                        } else if (!isNotificationActive) {
+                            Button(onClick = {
+                                applicationContext.startForegroundService(intent)
+                            }) {
+                                Text(stringResource(R.string.start))
+                            }
+                        } else {
+                            Button(onClick = {
+                                applicationContext.stopService(intent)
+                            }) {
+                                Text(stringResource(R.string.stop))
+                            }
+
+                            if (isBlockerRunning) {
+                                Text(stringResource(R.string.blocking_on_header), color = MaterialTheme.colors.error, style = MaterialTheme.typography.h4, textAlign = TextAlign.Center)
+                                Text(stringResource(R.string.blocking_on_body), textAlign = TextAlign.Center)
+                            }
                         }
                     }
                 }
@@ -80,7 +106,7 @@ fun SystemOverlayButton(
     Button(modifier = modifier, onClick = {
         overlayPermissionRequest.launch(intent)
     }) {
-        Text("Enable System Overlay")
+        Text(stringResource(R.string.system_overlay_button))
     }
 }
 
@@ -89,10 +115,10 @@ fun SystemOverlayExplainer(onDismissRequest: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = {
-            Text(text = "Why we need system overlay permission")
+            Text(text = stringResource(R.string.system_overlay_dialog_title))
         },
         text = {
-            Text("We need this permission to allow us to draw a blank screen over your app to block clicks")
+            Text(stringResource(R.string.system_overlay_dialog_text))
         },
         confirmButton = {
             Button(onClick = onDismissRequest) {
