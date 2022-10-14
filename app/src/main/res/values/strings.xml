@@ -3,4 +3,7 @@
     <string name="notification_title">BabyBlocker Active</string>
     <string name="notification_content">Click this to block all presses on the screen. To disable click blocker, press screen 5 times</string>
     <string name="notification_content_small">Click this to block all presses on the screen.</string>
+    <string name="notification_action_start">Start Blocking</string>
+    <string name="notification_action_stop">Stop Blocking</string>
+    <string name="notification_action_close">Close Baby Blocker</string>
 </resources>

@@ -10,10 +10,16 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.LinearLayout
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.util.*
 
-
 class LayoverService : Service() {
+    private val serviceJob = Job()
+    private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
+
     private lateinit var layoutView: View
     private lateinit var windowManager: WindowManager
 
@@ -35,11 +41,26 @@ class LayoverService : Service() {
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager? ?: error("Window Manager Must Not Be Null")
         layoutView = TimedRemovalLayout(this)
         windowManager.addView(layoutView, params)
+
+        serviceScope.launch {
+            BabyBlockerStatus.updateStatus(isActive = true)
+        }
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        when (intent?.action) {
+            ACTION_CLOSE -> stopSelf()
+        }
+        return START_NOT_STICKY
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         windowManager.removeView(layoutView)
+        serviceScope.launch {
+            BabyBlockerStatus.updateStatus(isActive = false)
+            serviceJob.cancel()
+        }
+        super.onDestroy()
     }
 
     private class TimedRemovalLayout @JvmOverloads constructor(
@@ -73,8 +94,8 @@ class LayoverService : Service() {
     companion object {
         private const val LayoutParamFlags = (WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                 or WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-                or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
+                or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+
+        const val ACTION_CLOSE = "ACTION_CLOSE"
     }
 }

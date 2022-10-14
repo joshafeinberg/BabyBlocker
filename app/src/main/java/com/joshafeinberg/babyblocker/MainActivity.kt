@@ -4,7 +4,6 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.ComponentActivity
@@ -31,7 +30,7 @@ class MainActivity : ComponentActivity() {
 
                     var hasOverlayPermission by remember { mutableStateOf(hasOverlayPermission(this)) }
                     var openDialog by remember { mutableStateOf(false) }
-                    var isServiceRunning by remember { mutableStateOf(isServiceRunning()) }
+                    val isServiceRunning by BabyBlockerStatus.babyBlockerStatus.collectAsState()
 
                     if (!hasOverlayPermission) {
                         SystemOverlayButton(modifier = Modifier) {
@@ -47,19 +46,13 @@ class MainActivity : ComponentActivity() {
                         }
                     } else if (!isServiceRunning) {
                         Button(onClick = {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                applicationContext.startForegroundService(intent)
-                            } else {
-                                startService(intent)
-                            }
-                            isServiceRunning = true
+                            applicationContext.startForegroundService(intent)
                         }) {
                             Text("Start BabyBlocker")
                         }
                     } else {
                         Button(onClick = {
                             applicationContext.stopService(intent)
-                            isServiceRunning = false
                         }) {
                             Text("Stop BabyBlocker")
                         }
